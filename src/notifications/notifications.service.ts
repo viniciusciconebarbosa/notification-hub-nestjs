@@ -3,6 +3,7 @@ import { SendNotificationDto } from './dto/send-notification.dto';
 
 @Injectable()
 export class NotificationsService {
+  
   async processNotification(dto: SendNotificationDto) {
     console.log('Recebendo notificação de:', dto.appId);
     

@@ -8,7 +8,7 @@ export class NotificationsController {
 
   @Post('send')  
   async send(@Body() sendNotificationDto: SendNotificationDto) {
-     
+    
     return this.notificationsService.processNotification(sendNotificationDto);
   }
 }
