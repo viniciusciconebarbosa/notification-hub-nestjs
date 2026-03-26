@@ -21,18 +21,18 @@ O objetivo deste Hub é receber requisições de outras aplicações, processar 
 - **Integração com IA:** Middleware preparado para processamento de linguagem natural.
 - **Backend Robusto:** Desenvolvido por um desenvolvedor focado em escalabilidade e automação.
 
-## 🛠️ Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 - **Framework:** NestJS (Node.js)
 - **Linguagem:** TypeScript
 - **Validação:** Class-validator & Class-transformer
 - **Integrações:** OpenAI API (Planejado), PostgreSQL (Planejado)
 
-## 📁 Estrutura de Pastas
+##  Estrutura de Pastas
 Atualmente o projeto segue a estrutura modular do NestJS:
 - `src/notifications`: Módulo principal de notificações.
 - `src/notifications/dto`: Contratos de entrada de dados (Validação).
 
-## 🚀 Como Rodar
+##  Como Rodar
 1. Instale as dependências:
    ```bash
    npm install
