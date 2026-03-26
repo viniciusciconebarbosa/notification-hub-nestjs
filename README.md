@@ -10,10 +10,10 @@
 
 #  Notification Hub - Microserviço de Mensageria com IA
 
-Este é um microserviço desenvolvido em **NestJS** focado em centralizar e automatizar notificações (E-mail, Logs, etc.) para sistemas externos, como ERPs legados em Java.
+Este é um microserviço desenvolvido em **NestJS** focado em centralizar e automatizar notificações (E-mail, Logs, etc.) para sistemas externos.
 
 ##  O Projeto
-O objetivo deste Hub é receber requisições de outras aplicações, processar o conteúdo utilizando **IA (OpenAI)** para refinar a comunicação e realizar o disparo de notificações de forma assíncrona e organizada.
+O objetivo deste Hub é receber requisições de outras aplicações, processar o conteúdo utilizando nestjs para refinar a comunicação e realizar o disparo de notificações de forma assíncrona e organizada.
 
 ###  Diferenciais Técnicos
 - **Arquitetura Modular:** Separação clara de responsabilidades seguindo os padrões do NestJS.
