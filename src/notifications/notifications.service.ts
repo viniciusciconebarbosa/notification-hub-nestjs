@@ -5,6 +5,7 @@ import { NotificationEntity } from './entities/notification.entity';
 import { Repository } from 'typeorm';
 import { MailerService } from '@nestjs-modules/mailer';
 import { NotificationStatus } from './enums/notification-status.enum';
+import { AiService } from '../ai/ai.service';
 
 @Injectable()
 export class NotificationsService {
@@ -14,13 +15,13 @@ export class NotificationsService {
     @InjectRepository(NotificationEntity)
     private readonly repository: Repository<NotificationEntity>,
     private readonly mailerService: MailerService,
+    private readonly aiService: AiService,
   ) {}
 
   async processNotification(dto: SendNotificationDto) {
     this.logger.log(`Processing notification for App: ${dto.appId}`);
 
     if (!dto.recipientEmail) {
-      this.logger.error('Tentativa de envio sem e-mail de destinatário!');
       throw new BadRequestException('E-mail é obrigatório');
     }
 
@@ -105,6 +106,13 @@ export class NotificationsService {
   }
 
   private async refineContentWithAI(content: string): Promise<string> {
-    return `[AI REFINED]: ${content}`;
+    try {
+      return await this.aiService.refineNotificationContent(content);
+    } catch (error) {
+      this.logger.warn(
+        `AI refinement failed, using original content as fallback. Reason: ${(error as Error).message}`,
+      );
+      return content;
+    }
   }
 }

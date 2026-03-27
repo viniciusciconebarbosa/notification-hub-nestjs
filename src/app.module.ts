@@ -26,19 +26,21 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     MailerModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        transport: {
-          host: config.get('MAIL_HOST'),
-          port: config.getOrThrow('MAIL_PORT'),
-          auth: {
-            user: config.get('MAIL_USER'),
-            pass: config.get('MAIL_PASS'),
+      useFactory: (config: ConfigService) => {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { MailtrapTransport } = require('mailtrap');
+        return {
+          transport: MailtrapTransport({
+            token: config.getOrThrow<string>('MAILTRAP_TOKEN'),
+          }),
+          defaults: {
+            from: {
+              address: config.get<string>('MAIL_FROM_ADDRESS', 'hello@viniciusbarbosadev.app'),
+              name: config.get<string>('MAIL_FROM_NAME', 'Notification Hub'),
+            },
           },
-        },
-        defaults: {
-          from: '"Hub de Notificações" <noreply@biblioteca.com>',
-        },
-      }),
+        };
+      },
     }),
     NotificationsModule,
   ],

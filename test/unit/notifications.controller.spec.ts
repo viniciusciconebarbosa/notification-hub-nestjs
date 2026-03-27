@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotificationsController } from './notifications.controller';
-import { NotificationsService } from './notifications.service';
-import { SendNotificationDto } from './dto/send-notification.dto';
-import { NotificationEntity } from './entities/notification.entity';
-import { NotificationStatus } from './enums/notification-status.enum';
+import { NotificationsController } from '../../src/notifications/notifications.controller';
+import { NotificationsService } from '../../src/notifications/notifications.service';
+import { SendNotificationDto } from '../../src/notifications/dto/send-notification.dto';
+import { NotificationEntity } from '../../src/notifications/entities/notification.entity';
+import { NotificationStatus } from '../../src/notifications/enums/notification-status.enum';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -92,7 +92,7 @@ describe('NotificationsController', () => {
       const dto = makeDto({ useAI: true });
       const expectedResult = {
         message: 'Notification processed successfully',
-        sentContent: '[AI REFINED]: Hello World',
+        sentContent: 'Mensagem refinada pelo Gemini.',
         aiUsed: true,
       };
       mockNotificationsService.processNotification.mockResolvedValue(expectedResult);
@@ -100,7 +100,6 @@ describe('NotificationsController', () => {
       const result = await controller.send(dto);
 
       expect(result.aiUsed).toBe(true);
-      expect(result.sentContent).toContain('[AI REFINED]');
     });
   });
 
