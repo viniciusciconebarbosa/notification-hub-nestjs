@@ -30,7 +30,7 @@ Arquitetura desacoplada: Atua como um gateway independente, permitindo que outro
 - **Linguagem:** TypeScript
 - **Banco de Dados:** PostgreSQL & TypeORM.
 - **Validação:** Class-validator & Class-transformer
-- **Integrações:** OpenAI API (Planejado), PostgreSQL (Planejado)
+- **Integrações:** OpenAI API (Planejado), PostgreSQL 
 - **Mensageria** Nodemailer (Integração SMTP/Mailtrap).
 - **Testes** Jest & Supertest.
 
