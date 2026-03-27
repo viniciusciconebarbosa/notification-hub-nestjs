@@ -1,17 +1,35 @@
-version: '3.8'
-
 services:
-  postgres:
-    image: postgres:latest
-    container_name: notification-db-container
+  db:
+    image: postgres:17-alpine
+    container_name: notification_db_container
+    restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgresspassword 
-      POSTGRES_DB: notification_db
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS:-postgresspassword}
+      POSTGRES_DB: ${DB_NAME:-notification_db}
     ports:
-      - "5432:5432" 
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: notification_api_container
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASS: ${DB_PASS:-postgresspassword}
+      DB_NAME: ${DB_NAME:-notification_db}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASS: ${MAIL_PASS}
+    depends_on:
+      - db
 
 volumes:
   postgres_data:
