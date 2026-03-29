@@ -7,6 +7,8 @@
   &nbsp;&nbsp;
   <img src="https://www.docker.com/wp-content/uploads/2022/03/vertical-logo-monochromatic.png" width="90" alt="Docker Logo"/>
   &nbsp;&nbsp;
+   <img src="https://www.vectorlogo.zone/logos/rabbitmq/rabbitmq-icon.svg" width="70" alt="RabbitMQ Logo"/>
+  &nbsp;&nbsp;
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/2560px-Google_Gemini_logo.svg.png" width="90" alt="Gemini Logo"/>
 </p>
 
