@@ -10,7 +10,7 @@
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/2560px-Google_Gemini_logo.svg.png" width="90" alt="Gemini Logo"/>
 </p>
 
-<h1 align="center">🔔 Notification Hub</h1>
+<h1 align="center"> Notification Hub</h1>
 
 <p align="center">
   <strong>AI-Powered Notification Microservice</strong><br/>
@@ -41,13 +41,13 @@ O **Notification Hub** resolve isso sendo um **gateway centralizado e agnóstico
 
 | | Funcionalidade | Descrição |
 |---|---|---|
-| 🤖 | **AI Content Refinement** | Integração real com `gemini-2.0-flash` via SDK `@google/generative-ai`. O conteúdo bruto é reescrito pela IA antes do envio. Em caso de falha, o sistema aplica **fallback automático** para o conteúdo original — garantindo resiliência. |
-| 📬 | **E-mail Transacional** | Envio via **Mailtrap API** com `nodemailer` e template HTML responsivo embutido. Sender e destinatário configuráveis por requisição. |
-| 🗄️ | **Persistência & Auditoria** | Cada notificação é persistida no **PostgreSQL** com TypeORM. Rastreio completo: `PENDING → SENT / FAILED`, com `originalContent` preservado para comparar o input com o output da IA. |
-| 🔒 | **Validação Robusta** | Entrada validada com `class-validator` + `class-transformer`. Erros retornam respostas padronizadas conforme as convenções do NestJS. |
-| 📖 | **Documentação Interativa** | Interface **Swagger/OpenAPI** disponível em `/api` para testes manuais e integração por outros times. |
-| 🧪 | **Testabilidade** | Testes unitários com **Jest** e mocks completos de dependências externas. Cobre fluxos de sucesso, falhas de IA e falhas de e-mail. |
-| 🐳 | **Pronto para Deploy** | Containerização completa com **Docker + Docker Compose**: app e banco isolados, sem configuração manual de ambiente. |
+|  | **AI Content Refinement** | Integração real com `gemini-2.0-flash` via SDK `@google/generative-ai`. O conteúdo bruto é reescrito pela IA antes do envio. Em caso de falha, o sistema aplica **fallback automático** para o conteúdo original — garantindo resiliência. |
+|  | **E-mail Transacional** | Envio via **Mailtrap API** com `nodemailer` e template HTML responsivo embutido. Sender e destinatário configuráveis por requisição. |
+|  | **Persistência & Auditoria** | Cada notificação é persistida no **PostgreSQL** com TypeORM. Rastreio completo: `PENDING → SENT / FAILED`, com `originalContent` preservado para comparar o input com o output da IA. |
+|  | **Validação Robusta** | Entrada validada com `class-validator` + `class-transformer`. Erros retornam respostas padronizadas conforme as convenções do NestJS. |
+|  | **Documentação Interativa** | Interface **Swagger/OpenAPI** disponível em `/api` para testes manuais e integração por outros times. |
+|  | **Testabilidade** | Testes unitários com **Jest** e mocks completos de dependências externas. Cobre fluxos de sucesso, falhas de IA e falhas de e-mail. |
+|  | **Pronto para Deploy** | Containerização completa com **Docker + Docker Compose**: app e banco isolados, sem configuração manual de ambiente. |
 
 ---
 
