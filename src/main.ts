@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,6 +16,13 @@ async function bootstrap() {
       transform: true,          
     }),
   );
+  app.connectMicroservice({
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://admin:admin123@localhost:5672'],
+      queue: 'notification.queue',
+    },
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Hub de Notificações')
@@ -25,6 +33,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
+  await app.startAllMicroservices();
   await app.listen(process.env.PORT ?? 3000);
 }
 

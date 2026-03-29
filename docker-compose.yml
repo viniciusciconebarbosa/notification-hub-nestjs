@@ -1,17 +1,44 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:17-alpine
     container_name: notification_db_container
     restart: always
     environment:
-      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${DB_PASS:-postgresspassword}
-      POSTGRES_DB: ${DB_NAME:-notification_db}
+    command: >
+      sh -c "docker-entrypoint.sh postgres &
+      sleep 5;
+      psql -U postgres -c 'CREATE DATABASE notification_db;';
+      wait"
     ports:
-      - "5432:5432"
+      - "5434:5432"       
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
+    networks:
+      - shared_network
+  
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_hub
+    ports:
+        - "5672:5672"
+        - "15672:15672"
+    environment:
+        - RABBITMQ_DEFAULT_USER=admin
+        - RABBITMQ_DEFAULT_PASS=admin123
+    volumes:
+        - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+        - shared_network
   api:
     build: .
     container_name: notification_api_container
@@ -23,13 +50,25 @@ services:
       DB_PORT: 5432
       DB_USER: ${DB_USER:-postgres}
       DB_PASS: ${DB_PASS:-postgresspassword}
-      DB_NAME: ${DB_NAME:-notification_db}
-      MAIL_HOST: ${MAIL_HOST}
-      MAIL_PORT: ${MAIL_PORT}
-      MAIL_USER: ${MAIL_USER}
-      MAIL_PASS: ${MAIL_PASS}
+      DB_NAME: notification_db
+      RABBITMQ_HOST: rabbitmq_hub   
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: admin
+      RABBITMQ_PASS: admin123
+      MAILTRAP_TOKEN: ${MAILTRAP_TOKEN}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME}
     depends_on:
       - db
+      - rabbitmq
+    networks:
+      - shared_network
 
 volumes:
+  rabbitmq_data:
   postgres_data:
+
+networks:
+  shared_network:
+    external: true
+    name: notification_network

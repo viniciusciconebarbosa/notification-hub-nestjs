@@ -28,6 +28,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
+
+
         const { MailtrapTransport } = require('mailtrap');
         return {
           transport: MailtrapTransport({
