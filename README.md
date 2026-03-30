@@ -1,17 +1,19 @@
 <p align="center">
   <a href="http://nestjs.com/" target="_blank">
-    <img src="https://nestjs.com/img/logo-small.svg" width="90" alt="NestJS Logo"/>
-  </a>
+    <img src="https://nestjs.com/img/logo-small.svg" width="90" alt="NestJS Logo"/></a>
   &nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/jestjs/jest/main/website/static/img/jest.png" width="80" alt="Jest Logo"/>
+  <a href="https://jestjs.io/" target="_blank">
+  <img src="https://raw.githubusercontent.com/jestjs/jest/main/website/static/img/jest.png" width="80" alt="Jest Logo"/></a>
   &nbsp;&nbsp;
   <img src="https://www.docker.com/wp-content/uploads/2022/03/vertical-logo-monochromatic.png" width="90" alt="Docker Logo"/>
   &nbsp;&nbsp;
-  <img src="https://www.vectorlogo.zone/logos/rabbitmq/rabbitmq-icon.svg" width="70" alt="RabbitMQ Logo"/>
+  <a href="https://www.rabbitmq.com/" target="_blank">
+  <img src="https://www.vectorlogo.zone/logos/rabbitmq/rabbitmq-icon.svg" width="70" alt="RabbitMQ Logo"/></a>
   &nbsp;&nbsp;
   <img src="https://www.vectorlogo.zone/logos/redis/redis-icon.svg" width="70" alt="Redis Logo"/>
   &nbsp;&nbsp;
-  <img src="https://user-images.githubusercontent.com/95200/143832033-32e868df-f3b0-4251-97fb-c64809a43d36.png" width="120" alt="BullMQ Logo"/>
+  <a href="https://bullmq.io/" target="_blank">
+  <img src="https://user-images.githubusercontent.com/95200/143832033-32e868df-f3b0-4251-97fb-c64809a43d36.png" width="120" alt="BullMQ Logo"/></a>
   &nbsp;&nbsp;
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/2560px-Google_Gemini_logo.svg.png" width="90" alt="Gemini Logo"/>
 </p>
