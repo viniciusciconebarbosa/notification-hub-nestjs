@@ -4,11 +4,24 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { NotificationEntity } from './notifications/entities/notification.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { BullModule } from '@nestjs/bullmq';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { ExpressAdapter } from '@bull-board/express';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    BullBoardModule.forRoot({
+      route: '/admin/queues',
+      adapter: ExpressAdapter,
+    }),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: 6379,
+      },
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -29,7 +42,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: (config: ConfigService) => {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
 
-
         const { MailtrapTransport } = require('mailtrap');
         return {
           transport: MailtrapTransport({
@@ -37,7 +49,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           }),
           defaults: {
             from: {
-              address: config.get<string>('MAIL_FROM_ADDRESS', 'hello@viniciusbarbosadev.app'),
+              address: config.get<string>(
+                'MAIL_FROM_ADDRESS',
+                'hello@viniciusbarbosadev.app',
+              ),
               name: config.get<string>('MAIL_FROM_NAME', 'Notification Hub'),
             },
           },
