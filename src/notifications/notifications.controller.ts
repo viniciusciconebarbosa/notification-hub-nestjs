@@ -23,11 +23,15 @@ export class NotificationsController {
 
   @Post('send')
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Envia uma nova notificação por e-mail' })
+  @ApiOperation({
+    summary: 'Enfileira uma notificação para envio assíncrono por e-mail',
+    description:
+      'Salva a notificação no banco, aplica refinamento de IA (opcional) e enfileira o envio do e-mail via BullMQ. O e-mail é entregue de forma assíncrona pelo worker em background.',
+  })
   @ApiBody({ type: SendNotificationDto })
   @ApiResponse({
     status: 201,
-    description: 'Notificação processada com sucesso.',
+    description: 'Notificação enfileirada com sucesso. O e-mail será enviado em background pelo worker.',
   })
   @ApiResponse({
     status: 400,
@@ -38,7 +42,10 @@ export class NotificationsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Lista todas as notificações enviadas' })
+  @ApiOperation({
+    summary: 'Lista todas as notificações',
+    description: 'Retorna todas as notificações registradas, ordenadas pela mais recente. O status reflete o resultado do processamento assíncrono: PENDING (aguardando worker), SENT (e-mail entregue) ou FAILED (erro no envio).',
+  })
   @ApiResponse({
     status: 200,
     description: 'Lista de notificações retornada com sucesso.',

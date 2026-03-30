@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotificationsService } from '../../src/notifications/notifications.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { getQueueToken } from '@nestjs/bullmq';
 import { NotificationEntity } from '../../src/notifications/entities/notification.entity';
-import { MailerService } from '@nestjs-modules/mailer';
 import { BadRequestException } from '@nestjs/common';
 import { NotificationStatus } from '../../src/notifications/enums/notification-status.enum';
 import { SendNotificationDto } from '../../src/notifications/dto/send-notification.dto';
@@ -44,8 +44,8 @@ const repositoryMockFactory = () => ({
   update: jest.fn(),
 });
 
-const mailerServiceMockFactory = () => ({
-  sendMail: jest.fn(),
+const mailQueueMockFactory = () => ({
+  add: jest.fn(),
 });
 
 const aiServiceMockFactory = () => ({
@@ -57,7 +57,7 @@ const aiServiceMockFactory = () => ({
 describe('NotificationsService', () => {
   let service: NotificationsService;
   let repositoryMock: ReturnType<typeof repositoryMockFactory>;
-  let mailerMock: ReturnType<typeof mailerServiceMockFactory>;
+  let mailQueueMock: ReturnType<typeof mailQueueMockFactory>;
   let aiMock: ReturnType<typeof aiServiceMockFactory>;
 
   beforeEach(async () => {
@@ -69,8 +69,8 @@ describe('NotificationsService', () => {
           useFactory: repositoryMockFactory,
         },
         {
-          provide: MailerService,
-          useFactory: mailerServiceMockFactory,
+          provide: getQueueToken('mail-queue'),
+          useFactory: mailQueueMockFactory,
         },
         {
           provide: AiService,
@@ -81,7 +81,7 @@ describe('NotificationsService', () => {
 
     service = module.get<NotificationsService>(NotificationsService);
     repositoryMock = module.get(getRepositoryToken(NotificationEntity));
-    mailerMock = module.get(MailerService);
+    mailQueueMock = module.get(getQueueToken('mail-queue'));
     aiMock = module.get(AiService);
   });
 
@@ -95,14 +95,13 @@ describe('NotificationsService', () => {
       );
     });
 
-    it('deve salvar e enviar notificação com caminho feliz (sem IA)', async () => {
+    it('deve salvar notificação com status PENDING e enfileirar job no BullMQ', async () => {
       const dto = makeDto();
       const savedNotification = makeFakeNotification();
 
       repositoryMock.create.mockReturnValue(savedNotification);
       repositoryMock.save.mockResolvedValue(savedNotification);
-      mailerMock.sendMail.mockResolvedValue(undefined);
-      repositoryMock.update.mockResolvedValue(undefined);
+      mailQueueMock.add.mockResolvedValue(undefined);
 
       const result = await service.processNotification(dto);
 
@@ -114,10 +113,17 @@ describe('NotificationsService', () => {
         }),
       );
       expect(repositoryMock.save).toHaveBeenCalledWith(savedNotification);
-      expect(mailerMock.sendMail).toHaveBeenCalledTimes(1);
-      expect(repositoryMock.update).toHaveBeenCalledWith(savedNotification.id, {
-        status: NotificationStatus.SENT,
-      });
+      expect(mailQueueMock.add).toHaveBeenCalledWith(
+        'send-mail',
+        expect.objectContaining({
+          notificationId: savedNotification.id,
+          email: savedNotification.recipientEmail,
+          content: savedNotification.content,
+          appId: savedNotification.appId,
+          subject: dto.subject,
+        }),
+        expect.objectContaining({ attempts: 3 }),
+      );
       expect(result).toEqual({
         message: 'Notification processed successfully',
         sentContent: dto.content,
@@ -136,8 +142,7 @@ describe('NotificationsService', () => {
       aiMock.refineNotificationContent.mockResolvedValue(refinedContent);
       repositoryMock.create.mockReturnValue(savedNotification);
       repositoryMock.save.mockResolvedValue(savedNotification);
-      mailerMock.sendMail.mockResolvedValue(undefined);
-      repositoryMock.update.mockResolvedValue(undefined);
+      mailQueueMock.add.mockResolvedValue(undefined);
 
       const result = await service.processNotification(dto);
 
@@ -162,8 +167,7 @@ describe('NotificationsService', () => {
       aiMock.refineNotificationContent.mockRejectedValue(new Error('Gemini API error'));
       repositoryMock.create.mockReturnValue(savedNotification);
       repositoryMock.save.mockResolvedValue(savedNotification);
-      mailerMock.sendMail.mockResolvedValue(undefined);
-      repositoryMock.update.mockResolvedValue(undefined);
+      mailQueueMock.add.mockResolvedValue(undefined);
 
       const result = await service.processNotification(dto);
 
@@ -176,39 +180,6 @@ describe('NotificationsService', () => {
       expect(result.aiUsed).toBe(true);
     });
 
-    it('deve atualizar status para FAILED quando envio de e-mail falha', async () => {
-      const dto = makeDto();
-      const savedNotification = makeFakeNotification();
-
-      repositoryMock.create.mockReturnValue(savedNotification);
-      repositoryMock.save.mockResolvedValue(savedNotification);
-      mailerMock.sendMail.mockRejectedValue(new Error('SMTP connection refused'));
-      repositoryMock.update.mockResolvedValue(undefined);
-
-      const result = await service.processNotification(dto);
-
-      expect(repositoryMock.update).toHaveBeenCalledWith(savedNotification.id, {
-        status: NotificationStatus.FAILED,
-      });
-      expect(result.message).toBe('Notification processed successfully');
-    });
-
-    it('deve usar o status SENT após envio bem-sucedido', async () => {
-      const dto = makeDto();
-      const savedNotification = makeFakeNotification();
-
-      repositoryMock.create.mockReturnValue(savedNotification);
-      repositoryMock.save.mockResolvedValue(savedNotification);
-      mailerMock.sendMail.mockResolvedValue(undefined);
-      repositoryMock.update.mockResolvedValue(undefined);
-
-      await service.processNotification(dto);
-
-      expect(repositoryMock.update).toHaveBeenCalledWith(savedNotification.id, {
-        status: NotificationStatus.SENT,
-      });
-    });
-
     it('deve definir originalContent com o conteúdo original mesmo quando useAI é true', async () => {
       const dto = makeDto({ useAI: true });
       const refinedContent = 'Conteúdo refinado pela IA.';
@@ -217,14 +188,33 @@ describe('NotificationsService', () => {
       aiMock.refineNotificationContent.mockResolvedValue(refinedContent);
       repositoryMock.create.mockReturnValue(savedNotification);
       repositoryMock.save.mockResolvedValue(savedNotification);
-      mailerMock.sendMail.mockResolvedValue(undefined);
-      repositoryMock.update.mockResolvedValue(undefined);
+      mailQueueMock.add.mockResolvedValue(undefined);
 
       await service.processNotification(dto);
 
       expect(repositoryMock.create).toHaveBeenCalledWith(
         expect.objectContaining({
           originalContent: dto.content,
+        }),
+      );
+    });
+
+    it('deve enfileirar job com backoff exponencial configurado', async () => {
+      const dto = makeDto();
+      const savedNotification = makeFakeNotification();
+
+      repositoryMock.create.mockReturnValue(savedNotification);
+      repositoryMock.save.mockResolvedValue(savedNotification);
+      mailQueueMock.add.mockResolvedValue(undefined);
+
+      await service.processNotification(dto);
+
+      expect(mailQueueMock.add).toHaveBeenCalledWith(
+        'send-mail',
+        expect.any(Object),
+        expect.objectContaining({
+          attempts: 3,
+          backoff: { type: 'exponential', delay: 5000 },
         }),
       );
     });
