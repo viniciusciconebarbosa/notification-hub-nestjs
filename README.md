@@ -154,6 +154,21 @@ RabbitMQ (Spring Boot)         REST (qualquer cliente)
           SENT     FAILED (retry automático até 3x)
 ```
 
+
+---
+## Dashboards
+
+### Dashboard RabbitMQ
+> O link local de acesso ao Rabbit quando subirem os containers ` -> http://localhost:15672/#/exchanges/%2F/notification.exchange`.
+![rabbitmq](https://github.com/user-attachments/assets/f117bc37-909a-4fca-a3a9-3ec677f9ecf5)
+### Dashboard BullMQ
+> O link local de acesso ao Bull quando subirem os containers ` -> http://localhost:3000/api/admin/queues/queue/mail-queue?status=completed`.
+![bullMQ](https://github.com/user-attachments/assets/0e255595-243b-4531-9815-6a5d0eede7d5)
+### Dashboard Redis
+> O link local de acesso ao Redis quando subirem os containers ` http://localhost:8081/`.
+![redis](https://github.com/user-attachments/assets/6ebf6423-96b3-404f-9536-f5dcefd702ed)
+
+
 ---
 
 ## 🛠️ Stack Técnica
