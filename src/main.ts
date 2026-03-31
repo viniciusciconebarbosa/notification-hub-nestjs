@@ -19,8 +19,15 @@ async function bootstrap() {
   app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://admin:admin123@localhost:5672'],
+      urls: [`amqp://${process.env.RABBITMQ_USER ?? 'admin'}:${process.env.RABBITMQ_PASS ?? 'admin123'}@${process.env.RABBITMQ_HOST ?? 'localhost'}:${process.env.RABBITMQ_PORT ?? 5672}`],
       queue: 'notification.queue',
+      deserializer: {
+        deserialize: (value, options) => ({
+          pattern: options?.originalMsg?.fields?.routingKey ?? 'notification.routingKey',
+          data: value?.pattern && value?.data ? value.data : value,
+          id: '',
+        }),
+      },
     },
   });
 
