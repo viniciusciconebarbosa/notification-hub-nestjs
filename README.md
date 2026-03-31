@@ -1,17 +1,19 @@
 <p align="center">
   <a href="http://nestjs.com/" target="_blank">
-    <img src="https://nestjs.com/img/logo-small.svg" width="90" alt="NestJS Logo"/>
-  </a>
+    <img src="https://nestjs.com/img/logo-small.svg" width="90" alt="NestJS Logo"/></a>
   &nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/jestjs/jest/main/website/static/img/jest.png" width="80" alt="Jest Logo"/>
+  <a href="https://jestjs.io/" target="_blank">
+  <img src="https://raw.githubusercontent.com/jestjs/jest/main/website/static/img/jest.png" width="80" alt="Jest Logo"/></a>
   &nbsp;&nbsp;
   <img src="https://www.docker.com/wp-content/uploads/2022/03/vertical-logo-monochromatic.png" width="90" alt="Docker Logo"/>
   &nbsp;&nbsp;
-  <img src="https://www.vectorlogo.zone/logos/rabbitmq/rabbitmq-icon.svg" width="70" alt="RabbitMQ Logo"/>
+  <a href="https://www.rabbitmq.com/" target="_blank">
+  <img src="https://www.vectorlogo.zone/logos/rabbitmq/rabbitmq-icon.svg" width="70" alt="RabbitMQ Logo"/></a>
   &nbsp;&nbsp;
   <img src="https://www.vectorlogo.zone/logos/redis/redis-icon.svg" width="70" alt="Redis Logo"/>
   &nbsp;&nbsp;
-  <img src="https://user-images.githubusercontent.com/95200/143832033-32e868df-f3b0-4251-97fb-c64809a43d36.png" width="120" alt="BullMQ Logo"/>
+  <a href="https://bullmq.io/" target="_blank">
+  <img src="https://user-images.githubusercontent.com/95200/143832033-32e868df-f3b0-4251-97fb-c64809a43d36.png" width="120" alt="BullMQ Logo"/></a>
   &nbsp;&nbsp;
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/2560px-Google_Gemini_logo.svg.png" width="90" alt="Gemini Logo"/>
 </p>
@@ -153,6 +155,21 @@ RabbitMQ (Spring Boot)         REST (qualquer cliente)
            ┌────┴────┐
           SENT     FAILED (retry automático até 3x)
 ```
+
+
+---
+## Dashboards
+
+### Dashboard RabbitMQ
+> O link local de acesso ao Rabbit quando subirem os containers ` -> http://localhost:15672/#/exchanges/%2F/notification.exchange`.
+![rabbitmq](https://github.com/user-attachments/assets/f117bc37-909a-4fca-a3a9-3ec677f9ecf5)
+### Dashboard BullMQ
+> O link local de acesso ao Bull quando subirem os containers ` -> http://localhost:3000/api/admin/queues/queue/mail-queue?status=completed`.
+![bullMQ](https://github.com/user-attachments/assets/0e255595-243b-4531-9815-6a5d0eede7d5)
+### Dashboard Redis
+> O link local de acesso ao Redis quando subirem os containers ` http://localhost:8081/`.
+![redis](https://github.com/user-attachments/assets/6ebf6423-96b3-404f-9536-f5dcefd702ed)
+
 
 ---
 
